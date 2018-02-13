@@ -14,7 +14,6 @@ requirejs.config({
 
     // Libs
     'jquery':         'lib/jquery-3.3.1.min',
-    'fabric':         'lib/fabric.min',
 
     // Utilities
 		'Debug':		    'utils/Debug'
