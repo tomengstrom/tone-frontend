@@ -1,3 +1,34 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: white;
+}
+
+.tone_mapping {
+  position: relative;
+}
+
+.tone_colorpicker {
+  width: 300px;
+  height: 50px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.tone_colorpicker_swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-right: 3px;
+  border: 10px solid white;
+}
+.tone_colorpicker_swatch--active {
+  border: 10px solid gray;
 }

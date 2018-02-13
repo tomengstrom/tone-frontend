@@ -4,14 +4,20 @@ requirejs.config({
 
 	},
 	paths: {
-		// jQuery
-		'jquery': 	'lib/jquery-3.3.1.min',
 
-		// Our modules
-    'Tone':     'Tone',
-		'Debug':		'utils/Debug',
+    'Controller':     'Controller',
+    'Tone':           'Tone',
+    'SoundPlayer':    'SoundPlayer',
 
-		'DeferredQueue': 'DeferredQueue'
+    'ColorMapper': 		'ColorMapper',
+		'ColorPicker':		'ColorPicker',
+
+    // Libs
+    'jquery':         'lib/jquery-3.3.1.min',
+    'fabric':         'lib/fabric.min',
+
+    // Utilities
+		'Debug':		    'utils/Debug'
 	},
 
 	urlArgs: "cachebust=" + ( new Date() ).getTime()
