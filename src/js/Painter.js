@@ -73,7 +73,7 @@ define([
     __drawPoint: function(e) {
       var self = this;
 
-      if(self.__isDragging) {
+      if (self.__isDragging) {
         self.__context.lineTo(e.clientX, e.clientY);
         self.__context.stroke();
         self.__context.beginPath();

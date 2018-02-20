@@ -38,6 +38,8 @@ define([
     self.__element.append(self.__canvas);
     self.__context = self.__canvas.get(0).getContext('2d');
 
+
+
     // Color picker
     self.__color = DEFAULT_COLOR;
     self.__colorPicker = new ColorPicker();
