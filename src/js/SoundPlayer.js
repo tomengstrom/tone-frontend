@@ -16,6 +16,7 @@ define([
   };
 
   SoundPlayer.prototype = {
+
     /*
     * Plays a sound.
     *

@@ -43,6 +43,16 @@ define([
       tone: self
     });
 
+    var controllerContainer = $('<div></div>');
+    controllerContainer.addClass('tone_controller-container');
+    self.__element.append(controllerContainer);
+
+    var nextButton = $('<button>Next</button>');
+    var prevButton = $('<button>Prev</button>');
+
+    controllerContainer.append(nextButton);
+    controllerContainer.append(prevButton);
+
     // Painter
     //self.__painter = new Painter({
     //  tone: self
