@@ -4,22 +4,25 @@ var context = canvas.getContext('2d');
 var radius = 10;
 var dragging = false;
 
-var resize = function(e) {
-  context.closePath();
+//var resize = function(e) {
+  //context.closePath();
+
+  // Set linewidth for drawing stuff on canvas
   context.lineWidth = radius * 2;
 
+  // Set canvas size
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-//  context = canvas.getContext('2d');
-};
+  context = canvas.getContext('2d');
+//};
 
 window.addEventListener('resize', function(e) {
   console.log('resize');
   console.log(e);
-  resize(e);
+  //resize(e);
 });
 
-resize();
+//resize();
 
 
 //context.lineWidth = radius*2;
