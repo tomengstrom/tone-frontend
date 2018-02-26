@@ -32,8 +32,12 @@ define([
 
     Debug.log('Tone', 'constructed');
 
+    $('.loader').remove();
+
     // DOM element; where we add graphics on the HTML page
     self.__element = $('.content');
+    self.__element.addClass('tone');
+    self.__element.show();
 
     // Controller for transferring data to and from Backend
     self.__controller = new Controller({});
@@ -47,9 +51,12 @@ define([
     self.__viewContainer.addClass('tone_view-container');
     self.__element.append( self.__viewContainer );
 
+    self.__views = [];
+
     // Intro (poem)
     self.__intro = new Intro({
-      tone: self
+      tone: self,
+      poemElement: $('.poem')
     });
     self.__addView(self.__intro);
 
@@ -74,17 +81,43 @@ define([
 
     var nextButton = $('<button>Next</button>');
     var prevButton = $('<button>Prev</button>');
+    nextButton.addClass('tone_control-container_button');
+    prevButton.addClass('tone_control-container_button');
+
+    nextButton.on('click', function() {
+      self.__changeView(1);
+    });
+    prevButton.on('click', function() {
+      self.__changeView(-1);
+    });
 
     controlContainer.append(nextButton);
     controlContainer.append(prevButton);
 
     // Set the current view
-    self.__setView( self.__colorMapper );
+    self.__setView(1);
 
     return;
   };
 
   Tone.prototype = {
+
+    /*
+    * Changes view.
+    *
+    * @param {integer} direction  Positive or negative number.
+    *                             1 goes forward, -1 goes backward.
+    *
+    * @returns null;
+    */
+    __changeView: function(direction) {
+      var self = this;
+      var index = self.__currentIndex + direction;
+      if( index < 0 ) index = self.__views.length -1;
+      if (index == self.__views.length ) index = 0;
+      self.__setView( index );
+      return;
+    },
 
     /*
     * Adds a view to the view container.
@@ -96,23 +129,37 @@ define([
     __addView: function(view) {
       var self = this;
       self.__viewContainer.append( view.getElement() );
+      view.hide();
+      self.__views.push(view);
       return;
     },
 
     /*
     * Sets the currently enabled view.
-    * @param {object} view    A view (ColorMapper, Painter or Intro).
+    * @param {integer} index    An integer indicating a populated index in the
+    *                           views array.
     * @returns null
     */
-    __setView: function(view) {
+    __setView: function(index) {
       var self = this;
+      Debug.log('Tone', '__setView ' + index );
 
+
+      // Retrieve the view from array
+      var view = self.__views[index];
+
+      // Hide current view, if any
       if ( self.__currentView ) {
         self.__currentView.hide();
       }
 
+      // Set new current view and show it
       self.__currentView = view;
       self.__currentView.show();
+
+      // Set current index
+      self.__currentIndex = index;
+
 
       return;
     },

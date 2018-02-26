@@ -24,6 +24,7 @@ define([
     // Init canvas and context
     self.__canvas = $("<canvas>Sorry, your browser doesn't support canvas.</canvas>");
     self.getElement().append(self.__canvas);
+    self.getElement().addClass('tone_painter');
 
     self.__context = self.__canvas.get(0).getContext('2d');
 
@@ -31,12 +32,6 @@ define([
     self.__isDragging = false;
 
     self.__context.lineWidth = self.__radius * 2;
-
-    // Resize event listener
-    $(window).on('resize', function() {
-      self.__resize();
-    });
-    $(window).triggerHandler('resize');
 
     // Canvas event listeners
     $(self.__canvas).on('mousedown', function(e) {
@@ -48,6 +43,9 @@ define([
     $(self.__canvas).on('mousemove', function(e) {
       self.__drawPoint(e);
     });
+
+    // Fire resize event
+    $(window).triggerHandler('resize');
 
     return;
   };
@@ -84,10 +82,27 @@ define([
       return;
     },
 
-    __resize: function() {
+    _resize: function() {
       var self = this;
-      // FIXME implement
+
+      if(!self.__canvas) return;
+
+      // FIXME don't lose the current canvas contents on resize
+      self.__canvas.get(0).width = window.innerWidth;
+      self.__canvas.get(0).height = window.innerHeight;
+
+      self.__context.fillStyle = self.__color;
+
       return;
+    },
+
+    /*
+    * Title to use for this view. Overrides parent.
+    *
+    * @returns {string} string    A title to show when this view is enabled
+    */
+    _getTitle: function() {
+        return 'Painter';
     }
 
   });

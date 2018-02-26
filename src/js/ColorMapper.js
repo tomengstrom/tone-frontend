@@ -50,18 +50,13 @@ define([
     });
     element.append( self.__colorPicker.getElement() );
 
-    // Resize event listener
-    $(window).on('resize', function() {
-      self.__resize();
-    });
-    $(window).triggerHandler('resize');
-
     // Canvas event listeners
     $(self.__canvas).on('click', function(e) {
       self.__addPoint(e.clientX, e.clientY);
     });
 
-    self.hide();
+    // Fire resize event
+    $(window).triggerHandler('resize');
 
     return;
   };
@@ -107,12 +102,14 @@ define([
 
     /*
     * Resize event handler. Makes sure the canvas fills the window after
-    * it has been resized.
+    * it has been resized. Overrides parent.
     *
     * @return null
     */
-    __resize: function() {
+    _resize: function() {
       var self = this;
+
+      if(!self.__canvas) return;
 
       // FIXME don't lose the current canvas contents on resize
       self.__canvas.get(0).width = window.innerWidth;
@@ -121,6 +118,16 @@ define([
       self.__context.fillStyle = self.__color;
 
       return;
+    },
+
+
+    /*
+    * Title to use for this view. Overrides parent.
+    *
+    * @returns {string} string    A title to show when this view is enabled
+    */
+    _getTitle: function() {
+        return 'ColorMapper';
     }
   } );
 

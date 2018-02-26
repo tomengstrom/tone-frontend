@@ -6,11 +6,53 @@
 
 body {
   background-color: white;
+  overflow: hidden;
 }
 
+canvas {
+  border: 1px solid black;
+}
 
+/* Tone */
+.tone {
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.tone_control-container {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.tone_control-container_button {
+  padding: 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
 
-// Mapper
+/* View */
+.tone_view {
+  position: relative;
+}
+.tone_view_title {
+  position: absolute;
+  left: 200px;
+  top: 10px;
+}
+
+/* Intro */
+.poem {
+  display: none;
+}
+.tone_intro {
+  height: 100vh;
+  width: 100vw;
+}
+.tone_intro_poem {
+  display: block;
+}
+
+/* Mapper */
 .tone_mapper {
   position: relative;
 }
