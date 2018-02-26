@@ -1,13 +1,14 @@
 /*
 * View for painting based on the mapping.
-* // FIXME finish :)
 */
 define([
   'Debug',
-  'jquery'
+  'jquery',
+  '_View'
 ], function(
   Debug,
-  $
+  $,
+  _View
 ) {
 
   Debug.enableScope('Painter');
@@ -15,13 +16,14 @@ define([
   function Painter(args) {
     var self = this;
 
-    Debug.log('Painter', 'constructed');
+    // Call parent constructor
+    _View.call(this, args);
 
-    self.__tone = args.tone;
+    Debug.log('Painter', 'constructed');
 
     // Init canvas and context
     self.__canvas = $("<canvas>Sorry, your browser doesn't support canvas.</canvas>");
-    self.__element = self.__canvas;
+    self.getElement().append(self.__canvas);
 
     self.__context = self.__canvas.get(0).getContext('2d');
 
@@ -50,12 +52,9 @@ define([
     return;
   };
 
-  ColorInputView.prototype = {
-
-    getElement: function() {
-      return this.__element;
-    },
-
+  // Extend parent prototype
+  Painter.prototype = Object.create(_View.prototype);
+  $.extend( Painter.prototype, {
     __startDraw: function(e) {
       var self = this;
       self.__isDragging = true;
@@ -91,8 +90,7 @@ define([
       return;
     }
 
-  };
-
-  return ColorInputView;
+  });
+  return Painter;
 
 });

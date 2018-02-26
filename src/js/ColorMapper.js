@@ -6,10 +6,12 @@
 define([
   'Debug',
   'jquery',
+  '_View',
   'ColorPicker'
 ], function(
   Debug,
   $,
+  _View,
   ColorPicker
 ) {
 
@@ -23,22 +25,19 @@ define([
   function ColorMapper(args) {
     var self = this;
 
+    // Call parent class constructor
+    _View.call(this, args);
+
     Debug.log('ColorMapper', 'constructed');
 
-    // Reference to parent Tone object
-    self.__tone = args.tone;
+    var element = self.getElement();
+    element.addClass('tone_mapper');
 
     // Initialize DOM
-    // Main element
-    self.__element = $("<div></div>");
-    self.__element.addClass('tone_mapping');
-
     // Canvas
     self.__canvas = $("<canvas>Sorry, your browser doesn't support canvas.</canvas>");
-    self.__element.append(self.__canvas);
+    element.append(self.__canvas);
     self.__context = self.__canvas.get(0).getContext('2d');
-
-
 
     // Color picker
     self.__color = DEFAULT_COLOR;
@@ -49,7 +48,7 @@ define([
 
       self.__context.fillStyle = self.__color;
     });
-    self.__element.append( self.__colorPicker.getElement() );
+    element.append( self.__colorPicker.getElement() );
 
     // Resize event listener
     $(window).on('resize', function() {
@@ -62,20 +61,14 @@ define([
       self.__addPoint(e.clientX, e.clientY);
     });
 
+    self.hide();
+
     return;
   };
 
-  ColorMapper.prototype = {
-
-    /*
-    * Getter for the DOM element.
-    *
-    * @return {DOMElement}  The DOM element of this object.
-    */
-    getElement: function() {
-      return this.__element;
-    },
-
+  // Extend parent prototype
+  ColorMapper.prototype = Object.create(_View.prototype);
+  $.extend( ColorMapper.prototype, {
     /*
     * Draws a circle centered in the specified coordinates.
     *
@@ -129,8 +122,7 @@ define([
 
       return;
     }
-
-  };
+  } );
 
   return ColorMapper;
 
