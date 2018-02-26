@@ -83,11 +83,15 @@ define([
         return 'ColorMapper';
     },
 
+    /* Update stub, called when the view should update its data.
+    * @returns null
+    */
+    update: function() {},
 
     /*
     * Stub callback for resize event
     * @param {object} e   Event object.
-    * @returns null;
+    * @returns null
     */
     _resize: function(e) {},
 

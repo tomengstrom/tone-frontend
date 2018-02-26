@@ -34,6 +34,9 @@ define([
 
     $('.loader').remove();
 
+    // Init point data structure
+    self.__mapperData = [];
+
     // DOM element; where we add graphics on the HTML page
     self.__element = $('.content');
     self.__element.addClass('tone');
@@ -148,6 +151,9 @@ define([
       // Retrieve the view from array
       var view = self.__views[index];
 
+      // Tell view that it has been selected
+      view.update();
+
       // Hide current view, if any
       if ( self.__currentView ) {
         self.__currentView.hide();
@@ -177,26 +183,35 @@ define([
     * Maps a color to a point.
     * // TODO how is this mapping normalized ?
     *
-    * @param {number} x       The x-coordinate of the point.
-    * @param {number} y       The y-coordinate of the point.
-    * @param {string} color   Color value.
+    * @param {object} pointData   Object containing the point data:
+    *   @param {number} x       The x-coordinate of the point.
+    *   @param {number} y       The y-coordinate of the point.
+    *   @param {number} xMax    The current maximum x dimension of the canvas.
+    *   @param {number} yMax    The current maximum y dimension of the canvas.
+    *   @param {string} color   Color value.
     *
     * @returns null
     */
-    addPoint: function( x, y, color ) {
+    addPoint: function( pointData ) {
       var self = this;
-      Debug.log('Tone', 'addPoint called', {
-        x: x, y: y, color: color
-      });
 
-      // Play sound representing
-      // this point/sound combination
-      var soundArgs = {};
-      self.__soundPlayer.playSound({
-        x: x, y:y, color: color
-      });
+      Debug.log('Tone', 'addPoint:', pointData );
+
+      // Store data
+      self.__mapperData.push(pointData)
+      // Play sound for this point
+      self.__soundPlayer.playSound(pointData);
+
+      Debug.log('Tone', 'addPoint: mapperData is', self.__mapperData);
 
       return;
+    },
+
+    /* Getter for mapper data
+    * @returns {array}      The array containing data added by ColorMapper
+    */
+    getMapperData: function() {
+      return this.__mapperData;
     }
 
 

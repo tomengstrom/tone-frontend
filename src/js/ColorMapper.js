@@ -42,12 +42,11 @@ define([
     // Color picker
     self.__color = DEFAULT_COLOR;
     self.__colorPicker = new ColorPicker();
-    $(self.__colorPicker).on( ColorPicker.COLOR_PICKED_EVENT, function(e, color) {
-      Debug.log('ColorMapper', ColorPicker.COLOR_PICKED_EVENT + ' fired', color );
-      self.__color = color;
-
-      self.__context.fillStyle = self.__color;
+    $(self.__colorPicker).on( ColorPicker.COLOR_PICKED_EVENT, function(e) {
+      self.__setColor( self.__colorPicker.getColor() );
     });
+    // Fire color picked event to get initial color
+    self.__setColor( self.__colorPicker.getColor() );
     element.append( self.__colorPicker.getElement() );
 
     // Canvas event listeners
@@ -64,6 +63,22 @@ define([
   // Extend parent prototype
   ColorMapper.prototype = Object.create(_View.prototype);
   $.extend( ColorMapper.prototype, {
+
+    /*
+    * Set the current color
+    *
+    * @param {string} color   String representation of a color
+    *
+    * @returns null
+    */
+    __setColor: function(color) {
+      var self = this;
+      Debug.log('ColorMapper', '__setColor: ' + color );
+      self.__color = color;
+      self.__context.fillStyle = self.__color;
+      return;
+    },
+
     /*
     * Draws a circle centered in the specified coordinates.
     *
@@ -92,7 +107,13 @@ define([
       var self = this;
 
       // Add point to data structure
-      self.__tone.addPoint( x, y, self.__color );
+      self.__tone.addPoint( {
+        x: x,
+        y: y,
+        xMax: self.__canvas.width(),
+        yMax: self.__canvas.height(),
+        color: self.__color
+      } );
 
       // Draw point on canvas
       self.__drawCircle(x,y);

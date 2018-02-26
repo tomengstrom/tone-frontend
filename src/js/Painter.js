@@ -103,7 +103,18 @@ define([
     */
     _getTitle: function() {
         return 'Painter';
-    }
+    },
+
+    /* Updates the painting area based on current ColorMapper data.
+    * @returns null
+    */
+    update: function() {
+      var self = this;
+      var mapperData = self.__tone.getMapperData();
+      // FIXME do something with the mapper data
+      return;
+    },
+
 
   });
   return Painter;

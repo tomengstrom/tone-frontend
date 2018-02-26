@@ -25,8 +25,29 @@ define([
     self.__element = $('<div></div>');
     self.__element.addClass('tone_colorpicker');
 
+
+    var colors = [];
+
+    // Predefined color palette
+    //colors = COLORS;
+
+    // Create random colors
+    var getRandomColor = function() {
+      return Math.floor( Math.random() * 255 );
+    }
+    var randomColors = [];
+    for ( var i = 0; i < 12; i++ ) {
+      var red = getRandomColor();
+      var green = getRandomColor();
+      var blue = getRandomColor();
+      randomColors.push( 'rgb(' + red +','+green+','+blue+')');
+    }
+    colors = randomColors;
+    Debug.log('ColorPicker', 'colors are', colors );
+
     self.__activeSwatch;
-    $.each( COLORS, function(i, color) {
+    self.__currentColor;
+    $.each( colors, function(i, color) {
       var swatch = $('<div></div>');
       swatch.addClass('tone_colorpicker_swatch');
       swatch.css({
@@ -37,7 +58,11 @@ define([
           self.__activeSwatch.removeClass('tone_colorpicker_swatch--active')
         }
         swatch.addClass('tone_colorpicker_swatch--active');
-        self.__colorSelected(color);
+        self.__currentColor = color;
+        Debug.log('ColorPicker', 'swatch clicked, color is ' + self.__currentColor );
+
+        $(self).trigger( ColorPicker.COLOR_PICKED_EVENT, [] );
+
         self.__activeSwatch = swatch;
       });
       if(i == 0) {
@@ -53,16 +78,11 @@ define([
 
   ColorPicker.prototype = {
 
-    /*
-    * Fires the COLOR_PICKED_EVENT with the specified color
-    *
-    * @param {string} color     Color string.
-    *
-    * @return null
+    /* Getter for current color
+    * @returns {string} current color string
     */
-    __colorSelected: function(color) {
-      $(this).trigger( ColorPicker.COLOR_PICKED_EVENT, [ color ] );
-      return;
+    getColor: function() {
+      return this.__currentColor;
     },
 
     /*
