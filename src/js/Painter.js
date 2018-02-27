@@ -27,28 +27,50 @@ define([
 
   // Gets outer tangent points of two circles
   Math.getOuterTangents = function(x1,y1,r1, x2,y2,r2) {
+    Debug.log('Painter', 'getOuterTangents params:', [x1,y1,r1,x2,y2,r2]);
     var d = Math.getDistance(x1,x2,y1,y2);
-    var sr = r1 / r2;
 
-    var h2 = d / ( 1 + sr );
-    var b = Math.acos( r2 / h2 );
-    var a = 0;
-    //var a = Math.atan2( (y2-y1), (x2-x1) );
+    var h1 = Math.abs( d / ( r2 / r1 - 1 ) );
+    var h2 = Math.abs( r2 / r1 * d / ( r2 / r1 - 1) );
 
-    var t1a = a + b;
-    var t2a = a - b;
+    // Angle of tangents to circle center line
+    var b = Math.acos( r1 / h1 );
+    // Angle between circle center line and tangent cross
+    var c = Math.PI / 2 - b;
 
-    var c1p1 = Math.getRadialPoint(x1,y1,r1,t1a);
-    var c1p2 = Math.getRadialPoint(x1,y1,r1,t2a);
+    // Angle of center line in the plane
+    var a = Math.atan( (y2-y1) / (x2-x1) );
 
-    var c2p1 = Math.getRadialPoint(x2,y2,r2,t1a);
-    var c2p2 = Math.getRadialPoint(x2,y2,r2,t2a);
+    // Tangent crossing point
+    var t = Math.getRadialPoint( x2, y2, h2, a + Math.PI )
+
+    // Distances to tangent points
+    var t1r = h1 * Math.sin(b);
+    var t2r = h2 * Math.sin(b);
+
+    Debug.log('Painter', 'getOuterTangents', {
+      a: a,
+      b: b,
+      b2: b,
+      t: t,
+      t1r: t1r,
+      t2r: t2r,
+      h2: h2,
+      h1: h1
+    });
+
+    var c1p1 = Math.getRadialPoint( t.x, t.y, t1r, a + c);
+    var c1p2 = Math.getRadialPoint( t.x, t.y, t1r, a - c );
+
+    var c2p1 = Math.getRadialPoint( t.x, t.y, t2r, a + c );
+    var c2p2 = Math.getRadialPoint( t.x, t.y, t2r, a - c );
 
     return {
       c1p1: c1p1,
       c1p2: c1p2,
       c2p1: c2p1,
-      c2p2: c2p2
+      c2p2: c2p2,
+      tp: t
     }
   }
 
@@ -95,8 +117,10 @@ define([
     // Fire resize event
     $(window).triggerHandler('resize');
 
-    var drawCircle = function(cx,cy,r) {
+    var drawCircle = function(cx,cy,r, color) {
+      var strokeColor = color ? color : self.__color;
       self.__context.beginPath();
+      self.__context.strokeStyle = strokeColor;
       self.__context.arc( cx, cy, r, 0, Math.PI*2);
       self.__context.stroke();
       self.__context.closePath();
@@ -111,22 +135,31 @@ define([
     }
 
     // Circle test
-    var x1 = 300, y1=300, r1 = 50;
-    var x2 = 150, y2=300, r2 = 25;
+    var x1 = 300, y1=300, r1 = 100;
+    var x2 = 150, y2=400, r2 = 25;
 
     var c = Math.getOuterTangents( x1,y1,r1, x2,y2,r2 );
     Debug.log('Painter', 'c is', c);
 
     // Circles
-    drawCircle(x1,y1,r1);
-    drawCircle(x2,y2,r2);
+    drawCircle(x1,y1,r1, 'red');
+    drawCircle(x2,y2,r2, 'blue');
 
     // Tangents
-    //drawLine( c.c1p1.x, c.c1p1.y, c.c2p1.x, c.c2p1.y );
-    drawCircle(c.c1p1.x, c.c1p1.y, 4);
-    drawCircle(c.c1p2.x, c.c1p2.y, 4);
-    drawCircle(c.c2p1.x, c.c2p1.y, 4);
-    drawCircle(c.c2p2.x, c.c2p2.y, 4);
+    drawLine( c.c1p1.x, c.c1p1.y, c.c2p1.x, c.c2p1.y );
+    drawLine( c.c1p2.x, c.c1p2.y, c.c2p2.x, c.c2p2.y );
+
+    drawCircle(c.c1p1.x, c.c1p1.y, 4, 'cyan');
+    drawCircle(c.c1p2.x, c.c1p2.y, 4, 'cyan');
+    drawCircle(c.c2p1.x, c.c2p1.y, 4, 'orange');
+    drawCircle(c.c2p2.x, c.c2p2.y, 4, 'orange');
+
+    drawLine( x1, y1, c.tp.x, c.tp.y );
+
+    drawCircle(x2, y2, 4, 'rgb(0,255,0)');
+    drawCircle(x1, y1, 4, 'rgb(0,255,0)');
+
+    drawCircle(c.tp.x, c.tp.y, 4, 'rgb(0,255,0)');
 
     return;
   };
@@ -260,7 +293,10 @@ define([
 
         // Update radius
         var previousRadius = self.__radius;
-        self.__updateRadius( distance );
+        //self.__updateRadius( distance );
+
+        self.__radius += Math.random() * 3;
+        self.__radius -= Math.random() * 3;
 
         // Update color
         self.__updateColor( x, y );
@@ -268,8 +304,8 @@ define([
         // Draw new circle
         self.__context.beginPath();
         self.__context.arc( x, y, self.__radius, 0, Math.PI*2);
-        self.__context.stroke();
-        //self.__context.fill();
+        //self.__context.stroke();
+        self.__context.fill();
         self.__context.beginPath();
         self.__context.moveTo( x, y);
 
@@ -284,10 +320,7 @@ define([
           self.__context.lineTo( tps.c2p1.x, tps.c2p1.y );
           self.__context.lineTo( tps.c2p2.x, tps.c2p2.y );
           self.__context.lineTo( tps.c1p2.x, tps.c1p2.y );
-          self.__context.fillStyle = 'red';
           self.__context.fill();
-          self.__context.closePath();
-
         }
 
         self.__previousPoint = {
