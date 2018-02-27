@@ -12,13 +12,6 @@ define([
 ) {
   Debug.enableScope('ColorPicker');
 
-  var COLORS = [
-    'black', 'violet', 'wheat',
-    'orange', 'goldenrod', 'greenyellow',
-    'red', 'pink', 'purple',
-    'indigo', 'cyan'
-  ];
-
   function ColorPicker(args) {
     var self = this;
 
@@ -29,22 +22,32 @@ define([
     var colors = [];
 
     // Predefined color palette
-    //colors = COLORS;
+    var fixedPalette = [
+      'black', 'violet', 'wheat',
+      'orange', 'goldenrod', 'greenyellow',
+      'red', 'pink', 'purple',
+      'indigo', 'cyan'
+    ];
 
-    // Create random colors
+    // Random color palette
     var getRandomColor = function() {
       return Math.floor( Math.random() * 255 );
     }
-    var randomColors = [];
+    var randomPalette = [];
     for ( var i = 0; i < 12; i++ ) {
       var red = getRandomColor();
       var green = getRandomColor();
       var blue = getRandomColor();
-      randomColors.push( 'rgb(' + red +','+green+','+blue+')');
+      randomPalette.push( 'rgb(' + red +','+green+','+blue+')');
     }
-    colors = randomColors;
+
+    // Select the color palette to use
+    // colors = fixedPalette;
+    colors = randomPalette;
+
     Debug.log('ColorPicker', 'colors are', colors );
 
+    // Create swatches
     self.__activeSwatch;
     self.__currentColor;
     $.each( colors, function(i, color) {
@@ -53,21 +56,32 @@ define([
       swatch.css({
         'background-color': color
       });
+
+      // Click event for selecting swatch
       swatch.on('click', function() {
+        // Set current color
+        self.__currentColor = color;
+        Debug.log('ColorPicker', 'swatch clicked, color is ' + self.__currentColor );
+
+        // Toggle swatch classes
         if ( self.__activeSwatch ) {
           self.__activeSwatch.removeClass('tone_colorpicker_swatch--active')
         }
         swatch.addClass('tone_colorpicker_swatch--active');
-        self.__currentColor = color;
-        Debug.log('ColorPicker', 'swatch clicked, color is ' + self.__currentColor );
 
+        // Set current swatch
+        self.__activeSwatch = swatch;
+
+        // Trigger the event for listeners
         $(self).trigger( ColorPicker.COLOR_PICKED_EVENT, [] );
 
-        self.__activeSwatch = swatch;
       });
+
+      // Select initial swatch
       if(i == 0) {
         $(swatch).trigger('click');
       }
+
       self.__element.append(swatch);
     } );
 

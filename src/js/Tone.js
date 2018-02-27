@@ -98,7 +98,7 @@ define([
     controlContainer.append(prevButton);
 
     // Set the current view
-    self.__setView(1);
+    self.__setView(2);
 
     return;
   };
@@ -178,6 +178,13 @@ define([
       return this.__soundPlayer;
     },
 
+    /*
+    * Getter for Controller instance.
+    * @returns {Controller}    Controller instance.
+    */
+    getController: function() {
+      return this.__controller;
+    },
 
     /*
     * Maps a color to a point.
@@ -212,8 +219,24 @@ define([
     */
     getMapperData: function() {
       return this.__mapperData;
-    }
+    },
 
+    /*
+    * Normalizes a coordinate from a source plane to a target plane
+    * @param {object} args            Object containing the variables:
+    *   @param {number} x             The x-coordinate of the point.
+    *   @param {number} y             The y-coordinate of the point.
+    *   @param {number} sourceXMax    The maximum x dimension of the source plane.
+    *   @param {number} sourceYMax    The maximum y dimension of the source plane.
+    *   @param {number} targetXMax    The maximum x dimension of the target plane.
+    *   @param {number} targetYMax    The maximum y dimension of the target plane.
+    */
+    remapCoordinate: function( args ) {
+      return {
+        x: args.targetXMax * args.x / args.sourceXMax,
+        y: args.targetYMax * args.y / args.sourceYMax
+      };
+    }
 
   };
 

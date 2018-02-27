@@ -36,12 +36,13 @@ define([
     * @return null
     */
     getPointSound: function(x, y, xUpperBound, yUpperBound) {
-      // Get sound from Backend
-      return sound;
+      // FIXME Get sound from Backend
+      return null;
     },
 
     /* Get brush size based on args */
-    getBrushSize: function(args) {}
+    getBrushSize: function(args) {},
+
   };
 
   return Controller;
